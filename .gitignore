@@ -6,3 +6,5 @@ build
 .env
 .env.docker
 
+src/prisma-client
+
