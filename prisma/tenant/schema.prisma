@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../src/prisma-client/tenant"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("TENANT_DATABASE_URL")
+}
+
+model User {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  name  String?
+}
+
+model Setting {
+  id    Int    @id @default(autoincrement())
+  key   String @unique
+  value String
+}
+
+model Regions {
+  id    Int    @id @default(autoincrement())
+  title   String 
+}
