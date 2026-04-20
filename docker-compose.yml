@@ -2,19 +2,15 @@
 services:
   app:
     build: .
-    container_name: prisma_tenants_app
     ports:
       - "8000:8000"
-    depends_on:
-      - mysql
     env_file:
       - .env.docker
-    restart: always
+    depends_on:
+      - mysql
 
   mysql:
     image: mysql:8
-    container_name: mysql_prisma_tenants
-    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: master_tenant_db

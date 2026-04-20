@@ -5,6 +5,7 @@ build
 # Keep environment variables out of version control
 .env
 .env.docker
-
+.geminiignore
+GEMINI.md
 src/prisma-client
 

@@ -1,9 +1,12 @@
 #!/bin/sh
 
 echo "Waiting for DB..."
-sleep 5
 
-echo "Starting masterDB migrations..."
+until nc -z $DB_HOST $DB_PORT; do
+  sleep 2
+done
+
+echo "Running masterDB migrations..."
 # npx prisma migrate deploy --schema prisma/master/schema.prisma
 npm run migrate:master
 
