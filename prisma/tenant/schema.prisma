@@ -11,16 +11,8 @@ datasource db {
 model User {
   id    Int     @id @default(autoincrement())
   email String  @unique
-  name  String?
+  name  String
+
+   @@map("user") 
 }
 
-model Setting {
-  id    Int    @id @default(autoincrement())
-  key   String @unique
-  value String
-}
-
-model Regions {
-  id    Int    @id @default(autoincrement())
-  title   String 
-}

@@ -37,14 +37,14 @@ export class TenantMiddleware implements NestMiddleware {
         const tenantClient = await this.prismaService.getTenantClient(tenantId, tenant.config);
         
         // Fetch settings from Tenant DB
-        const settingsArray = await tenantClient.setting.findMany();
-        const settings = settingsArray.reduce((acc, curr) => {
-          acc[curr.key] = curr.value;
-          return acc;
-        }, {} as Record<string, string>);
+        // const settingsArray = await tenantClient.setting.findMany();
+        // const settings = settingsArray.reduce((acc, curr) => {
+        //   acc[curr.key] = curr.value;
+        //   return acc;
+        // }, {} as Record<string, string>);
 
         // Run with context
-        this.tenantService.getAls().run({ tenantId, settings }, () => next());
+        // this.tenantService.getAls().run({ tenantId, settings }, () => next());
       } catch (error) {
         if (error instanceof UnauthorizedException) throw error;
         throw new UnauthorizedException('Error initializing tenant context.');

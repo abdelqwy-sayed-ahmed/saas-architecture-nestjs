@@ -2,6 +2,7 @@ import { Injectable, ConflictException, InternalServerErrorException } from '@ne
 import { PrismaService } from '../prisma/prisma.service';
 import { execSync } from 'child_process';
 import * as path from 'path';
+import { CreateTenantDto } from './dto/create-tenant.dto';
 @Injectable()
 export class TenantsService {
   constructor(private readonly prisma: PrismaService) {}
@@ -12,7 +13,7 @@ export class TenantsService {
     });
   }
 
-  async create(data: { name: string; code: string; config: any }) {
+  async create(data: CreateTenantDto) {
     // 1. Validation: Check if tenant code already exists
     const existingTenant = await this.prisma.master.tenant.findUnique({
       where: { code: data.code },
@@ -38,7 +39,7 @@ export class TenantsService {
       // 3. Create the Database dynamically
       const { dbName, username, password, host, port } = data.config;
       await this.prisma.master.$executeRawUnsafe(`CREATE DATABASE IF NOT EXISTS \`${dbName}\``);
-      console.log(`Database '${dbName}' created or already exists.`);
+      console.log(` ${dbName} Database has been created successfully.`);
 
       // 4. Run Migrations for the new tenant
       const dbUrl = `mysql://${username}:${password}@${host}:${port}/${dbName}`;
@@ -63,4 +64,6 @@ export class TenantsService {
       throw new InternalServerErrorException(`Failed to create tenant: ${error.message}`);
     }
   }
+
+
 }

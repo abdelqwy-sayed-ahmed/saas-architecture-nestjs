@@ -1,9 +1,10 @@
 import { Controller, Get, Post, Body } from '@nestjs/common';
 import { TenantsService } from './tenants.service';
 import { IsMaster } from '../common/decorators/is-master.decorator';
+import { CreateTenantDto } from './dto/create-tenant.dto';
 
-@Controller('tenants')
 @IsMaster()
+@Controller('tenants')
 export class TenantsController {
   constructor(private readonly tenantsService: TenantsService) {}
 
@@ -14,7 +15,9 @@ export class TenantsController {
   }
 
   @Post('add')
-  create(@Body() data: { name: string; code: string; config: any }) {
-    return this.tenantsService.create(data);
+  create(@Body() dto: CreateTenantDto) {
+    return this.tenantsService.create(dto);
   }
+
+  
 }
