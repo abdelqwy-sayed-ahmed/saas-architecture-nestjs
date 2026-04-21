@@ -8,7 +8,7 @@ export interface TenantContext {
 }
 
 @Injectable()
-export class TenantService {
+export class TenantContextService {
   private readonly als = new AsyncLocalStorage<TenantContext>();
 
   getStore() {

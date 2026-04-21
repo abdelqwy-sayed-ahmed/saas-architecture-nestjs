@@ -1,22 +1,22 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TenantModule } from './tenant/tenant.module';
+import { TenantContextModule } from './tenant-context/tenant-context.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
-import { TenantsModule } from './tenants/tenants.module';
 import { ConfigModule } from '@nestjs/config';
+import { TenantManagementModule } from './tenant-management/tenant-management.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true, // Makes it available everywhere without re-importing
+      isGlobal: true, 
     }),
-    TenantModule,
-     PrismaModule,
-      UsersModule,
-       TenantsModule
-      ],
+    TenantContextModule,
+    PrismaModule,
+    UsersModule,
+    TenantManagementModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
