@@ -3,8 +3,8 @@ import {
   OnModuleDestroy,
   UnauthorizedException,
 } from '@nestjs/common';
-import { PrismaClient as MasterClient } from '../prisma-client/master';
-import { PrismaClient as TenantClient } from '../prisma-client/tenant';
+import { PrismaClient as MasterClient } from '../../prisma-client/master';
+import { PrismaClient as TenantClient } from '../../prisma-client/tenant';
 import { TenantContextService } from '../tenant-context/tenant-context.service';
 
 @Injectable()

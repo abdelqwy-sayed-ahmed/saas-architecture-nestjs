@@ -10,7 +10,6 @@ export class SettingItemDto {
   @IsNotEmpty()
   value!: string;
 }
-
 export class TenantSettingsDto {
   @IsString()
   @IsNotEmpty()
@@ -20,5 +19,4 @@ export class TenantSettingsDto {
   @ValidateNested({ each: true })
   @Type(() => SettingItemDto)
   settings!: SettingItemDto[];
-  
 }

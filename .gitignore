@@ -7,5 +7,5 @@ build
 .env.docker
 .geminiignore
 GEMINI.md
-src/prisma-client
+prisma-client
 

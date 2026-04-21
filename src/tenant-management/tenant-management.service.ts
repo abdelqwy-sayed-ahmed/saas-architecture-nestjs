@@ -80,17 +80,21 @@ export class TenantManagementService {
     }
   }
 
-  async updateTenantSettings(dto: TenantSettingsDto) {
+  async checkTenant(tenantCode: string) {
     const tenant = await this.prisma.master.tenant.findUnique({
       where: {
-        code: dto.code,
+        code: tenantCode,
       },
-      select:{id:true}
+      select: { id: true },
     });
     if (!tenant)
       throw new NotFoundException({ message: 'tenant code is not valid' });
-    
-    const settings= await this.prisma.master.$transaction(
+    return tenant;
+  }
+
+  async updateTenantSettings(dto: TenantSettingsDto) {
+    const tenant = await this.checkTenant(dto.code);
+    const settings = await this.prisma.master.$transaction(
       dto.settings.map((item) =>
         this.prisma.master.setting.upsert({
           where: {
@@ -112,6 +116,20 @@ export class TenantManagementService {
     );
 
     this.prisma.invalidateTenantCache(dto.code);
-    return settings
+    return settings;
+  }
+
+  async getTenantSeetings(tenantCode: string) {
+    const tenant = await this.checkTenant(tenantCode);
+    const settings = await this.prisma.master.setting.findMany({
+      where: {
+        tenantId: tenant?.id,
+      },
+      select: {
+        key: true,
+        value: true,
+      },
+    });
+    return settings;
   }
 }

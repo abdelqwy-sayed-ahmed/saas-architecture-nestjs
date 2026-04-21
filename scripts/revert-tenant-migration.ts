@@ -1,9 +1,9 @@
-import { PrismaClient as MasterClient } from '../src/prisma-client/master';
+import { PrismaClient as MasterClient } from '../prisma-client/master';
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 import * as path from 'path';
 import { execSync } from 'child_process';
-import { PrismaClient as TenantClient } from '../src/prisma-client/tenant';
+import { PrismaClient as TenantClient } from '../prisma-client/tenant';
 
 dotenv.config();
 

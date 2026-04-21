@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, NotFoundException } from '@nestjs/common';
 import { IsMaster } from '../common/decorators/is-master.decorator';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { TenantSettingsDto } from './dto/tenant-settings.dto';
@@ -7,7 +7,10 @@ import { TenantManagementService } from './tenant-management.service';
 @IsMaster()
 @Controller('tenants')
 export class TenantManagementController {
-  constructor(private readonly tenantService: TenantManagementService) {}
+  constructor(
+    private readonly tenantService: TenantManagementService
+  
+  ) {}
 
   @Get()
   getAlltenants() {
@@ -23,6 +26,11 @@ export class TenantManagementController {
   updateTenantSettings(@Body() dto:TenantSettingsDto){
     return this.tenantService.updateTenantSettings(dto)
   }
+
+  @Get("/:tenantCode/settings")
+   getTenantSettings(@Param('tenantCode') tenantCode:string){
+    return this.tenantService.getTenantSeetings(tenantCode)
+   }
 
 
 

@@ -5,8 +5,8 @@
   "compilerOptions": {
     "deleteOutDir": true,
     "assets": [
-      { "include": "prisma-client/**/*", "outDir": "build/src" }
-    ],
+  { "include": "../prisma-client/**/*", "outDir": "build/prisma-client" }
+],
     "watchAssets": true
   }
 }
