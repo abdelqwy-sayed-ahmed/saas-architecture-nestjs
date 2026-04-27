@@ -16,7 +16,7 @@
     "generate:master": "ts-node scripts/generate-master-migration.ts",
     "generate:tenant": "ts-node scripts/generate-tenant-migrations.ts",
     "migrate:master": "node build/scripts/master-migrations.js",
-    "migrate:tenants": "node build/scripts/tenant-migrations.js",
+    "migrate:tenants": "node build/scripts/run-tenants-migrations.js",
     "revert:tenant": "ts-node scripts/revert-tenant-migration.ts",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
