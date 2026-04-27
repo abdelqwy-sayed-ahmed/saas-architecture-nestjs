@@ -2,7 +2,7 @@
 
 A robust multi-tenant backend architecture built with **NestJS**, **Prisma**, and **MySQL**, supporting isolated databases per tenant (Database-per-tenant).
 
-## 🚀 Key Features
+##  Key Features
 
 ### 1. Split Prisma Schemas
 The project uses two separate Prisma schemas to maintain clear isolation between administrative data and tenant-specific data:
@@ -30,7 +30,7 @@ The project uses two separate Prisma schemas to maintain clear isolation between
 
 ---
 
-## 🛠 Project Setup
+##  Project Setup
 
 ### Environment Variables
 Create a `.env` file in the root directory:
@@ -60,7 +60,7 @@ $ npm install
 
 ---
 
-## 📖 Usage
+## Usage
 
 ### Tenant APIs
 Standard controllers require the `x-tenant-id` header. Access the tenant-specific Prisma client in your services:
@@ -101,7 +101,7 @@ async someMethod() {
 
 ---
 
-## 📜 Scripts
+## Scripts
 
 - `npm run start:dev`: Start the application in watch mode.
 - `npm run prisma-client:generate`: Generate both Master and Tenant Prisma clients.
