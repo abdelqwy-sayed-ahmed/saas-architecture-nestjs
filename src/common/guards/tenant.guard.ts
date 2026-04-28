@@ -16,8 +16,8 @@ export class TenantGuard implements CanActivate {
       context.getClass(),
     ]);
 
-    const contextStore = this.tenantContext.getStore();
-    const hasTenant = !!contextStore?.tenantId;
+    const contextStore = this.tenantContext.getTenantId();
+    const hasTenant = !!contextStore;
 
     if (isMaster) {
       return true; // Allow if decorated with @IsMaster()
