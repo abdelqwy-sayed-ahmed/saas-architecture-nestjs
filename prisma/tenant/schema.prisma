@@ -8,11 +8,85 @@ datasource db {
   url      = env("TENANT_DATABASE_URL")
 }
 
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String
-
-   @@map("user") 
+enum RoomType {
+  DIRECT
+  GROUP
 }
 
+enum MemberRole {
+  OWNER
+  MEMBER
+}
+
+enum MessageStatusType {
+  SENT
+  DELIVERED
+  READ
+}
+
+model User {
+  id            Int             @id @default(autoincrement())
+  email         String          @unique
+  name          String
+  members       RoomMember[]
+  messages      Message[]
+  messageStatus MessageStatus[]
+
+  @@map("user")
+}
+
+model Room {
+  id        Int          @id @default(autoincrement())
+  name      String?
+  type      RoomType     @default(DIRECT)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  members   RoomMember[]
+  messages  Message[]
+
+  @@map("room")
+}
+
+model RoomMember {
+  id     Int        @id @default(autoincrement())
+  roomId Int
+  userId Int
+  role   MemberRole @default(MEMBER)
+
+  JoinedAt   DateTime @default(now())
+  lastReadAt DateTime
+  room       Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([roomId, userId])
+  @@map("room_member")
+}
+
+model Message {
+  id            Int             @id @default(autoincrement())
+  roomId        Int
+  senderId      Int
+  content       String
+  createdAt     DateTime        @default(now())
+  deletedAt     DateTime?
+  room          Room            @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user          User            @relation(fields: [senderId], references: [id])
+  messageStatus MessageStatus[]
+
+  @@index([roomId, createdAt])
+  @@map("message")
+}
+
+model MessageStatus {
+  id          Int               @id @default(autoincrement())
+  messageId   Int
+  recipientId Int
+  status      MessageStatusType @default(SENT)
+  updatedAt   DateTime          @updatedAt
+
+  message   Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  recipient User    @relation(fields: [recipientId], references: [id])
+
+  @@unique([messageId, recipientId])
+  @@map("message_status")
+}

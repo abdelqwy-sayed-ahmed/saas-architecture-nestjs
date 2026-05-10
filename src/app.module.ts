@@ -6,6 +6,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { TenantManagementModule } from './tenant-management/tenant-management.module';
+import { RommsModule } from './rooms/rooms.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { TenantManagementModule } from './tenant-management/tenant-management.mo
     PrismaModule,
     UsersModule,
     TenantManagementModule,
+    RommsModule
   ],
   controllers: [AppController],
   providers: [AppService],
