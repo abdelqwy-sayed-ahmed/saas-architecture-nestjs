@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { MemberRole, RoomType } from '../../prisma-client/tenant';
@@ -7,17 +11,12 @@ import { MemberRole, RoomType } from '../../prisma-client/tenant';
 export class RoomsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getAllRooms() {
-    return await this.prisma.tenant.room.findMany({
-      include: {
-        members: true,
-        messages: true,
-      },
-    });
+  private get db() {
+    return this.prisma.tenant;
   }
 
   private async checkExistingUsers(userIds: number[]) {
-    const existingUsers = await this.prisma.tenant.user.findMany({
+    const existingUsers = await this.db.user.findMany({
       where: {
         id: { in: userIds },
       },
@@ -29,9 +28,40 @@ export class RoomsService {
       const existingids = existingUsers.map((u) => u.id);
       const missing = userIds.filter((id) => !existingids.includes(id));
       throw new BadRequestException(
-        `users with the following isd are not found :${missing.join(',')}`,
+        `users with ids, ${missing.join(',')} not found`,
       );
     }
+  }
+
+  private async checkExistingUser(userId: number) {
+    const user = await this.db.user.findUnique({
+      where: { id: userId },
+      select: { id: true },
+    });
+
+    if (!user) {
+      throw new BadRequestException(`User ${userId} not found`);
+    }
+
+    return user;
+  }
+
+  private async validateRoomForUserId(roomId: number, userId: number) {
+    const room = await this.db.room.findFirst({
+      where: {
+        id: roomId,
+        AND: {
+          members: {
+            some: {
+              userId,
+            },
+          },
+        },
+      },
+    });
+    if (!room) throw new NotFoundException('room is not found');
+
+    return true;
   }
 
   async createRoom(dto: CreateRoomDto) {
@@ -47,7 +77,7 @@ export class RoomsService {
     const allUsers = [...new Set([creatorId, ...memberIds])]; //to remove the dublication
     await this.checkExistingUsers(allUsers);
 
-    const room = await this.prisma.tenant.$transaction(async (manger) => {
+    const room = await this.db.$transaction(async (manger) => {
       const addNewRoom = await manger.room.create({
         data: {
           type: type,
@@ -77,7 +107,8 @@ export class RoomsService {
   }
 
   async getUserRooms(userId: number) {
-    const rooms = await this.prisma.tenant.room.findMany({
+    await this.checkExistingUser(userId);
+    const rooms = await this.db.room.findMany({
       where: {
         members: {
           some: {
@@ -101,6 +132,7 @@ export class RoomsService {
       },
       orderBy: { updatedAt: 'desc' },
     });
+
     return rooms.map((room) => {
       const { members, ...roomData } = room;
 
@@ -109,5 +141,39 @@ export class RoomsService {
         users: members.map((m) => m.user),
       };
     });
+  }
+
+  async getUserRoomById(roomId: number, userId: number) {
+    await this.validateRoomForUserId(roomId, userId);
+    const room = await this.db.room.findUnique({
+      where: {
+        id: roomId,
+      },
+      include: {
+        members: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
+            },
+          },
+        },
+        messages: {
+          include:{
+             user:{
+              select:{
+                id:true,name:true,email:true
+              }
+             }
+             
+          },
+          orderBy: { createdAt: 'desc' },
+        },
+      },
+    });
+    return room;
   }
 }

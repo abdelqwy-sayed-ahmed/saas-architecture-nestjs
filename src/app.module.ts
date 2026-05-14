@@ -7,6 +7,8 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { TenantManagementModule } from './tenant-management/tenant-management.module';
 import { RommsModule } from './rooms/rooms.module';
+import { Messagesmodule } from './messages/messages.module';
+import { RabbitMqModule } from './rabbitmq/rabbitmq.module';
 
 @Module({
   imports: [
@@ -17,7 +19,9 @@ import { RommsModule } from './rooms/rooms.module';
     PrismaModule,
     UsersModule,
     TenantManagementModule,
-    RommsModule
+    RommsModule,
+    Messagesmodule,
+    RabbitMqModule
   ],
   controllers: [AppController],
   providers: [AppService],
